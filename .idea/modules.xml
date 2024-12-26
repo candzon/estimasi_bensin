@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ProjectModuleManager">
+    <modules>
+      <module fileurl="file://$PROJECT_DIR$/estimasi_bensin.iml" filepath="$PROJECT_DIR$/estimasi_bensin.iml" />
+      <module fileurl="file://$PROJECT_DIR$/android/estimasi_bensin_android.iml" filepath="$PROJECT_DIR$/android/estimasi_bensin_android.iml" />
+    </modules>
+  </component>
+</project>
