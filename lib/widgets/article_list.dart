@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 import '../services/api_service.dart';
+import '../models/article.dart';
 import '../screens/article_detail_screen.dart';
 
 class ArticleList extends StatefulWidget {
@@ -44,7 +46,7 @@ class _ArticleListState extends State<ArticleList> {
                 Navigator.push(
                   context,
                   MaterialPageRoute(
-                    builder: (context) => ArticleDetailScreen(articleId: index),
+                    builder: (context) => ArticleDetailScreen(articleId: article.id),
                   ),
                 );
               },
@@ -54,11 +56,19 @@ class _ArticleListState extends State<ArticleList> {
                   children: [
                     ClipRRect(
                       borderRadius: BorderRadius.circular(8),
-                      child: Image.asset(
-                        'images/beat.png',
+                      child: Image.network(
+                        article.photo,
                         width: 80,
                         height: 60,
                         fit: BoxFit.cover,
+                        errorBuilder: (context, error, stackTrace) {
+                          return Container(
+                            width: 80,
+                            height: 60,
+                            color: Colors.grey[300],
+                            child: const Icon(Icons.error, size: 20),
+                          );
+                        },
                       ),
                     ),
                     const SizedBox(width: 12),
@@ -72,10 +82,13 @@ class _ArticleListState extends State<ArticleList> {
                               fontWeight: FontWeight.bold,
                               fontSize: 14,
                             ),
+                            maxLines: 2,
+                            overflow: TextOverflow.ellipsis,
                           ),
                           const SizedBox(height: 4),
                           Text(
-                            article.date,
+                            DateFormat('dd MMMM yyyy')
+                                .format(article.createdAt),
                             style: TextStyle(
                               color: Colors.grey[600],
                               fontSize: 12,

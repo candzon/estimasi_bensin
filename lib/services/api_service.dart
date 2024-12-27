@@ -1,8 +1,10 @@
+// api_service.dart
 import 'dart:convert';
 import 'package:http/http.dart' as http;
-import '../models/motorcycle.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
+import '../models/motorcycle.dart';
 import '../models/predict.dart';
+import '../models/article.dart';
 
 class ApiService {
   static const String apiKey = 'Lnh4vtS3k9f6q1p/IH+dew==Oml0r22EKCj9xbwP';
@@ -42,30 +44,38 @@ class ApiService {
   }
 
   Future<List<Article>> getArticles() async {
-    // Static article data
-    return [
-      Article(
-          id: 1,
-          title:
-              'Honda PCX 160 vs Yamaha Nmax Turbo: Duel Sengit Skutik Bongsor, Mana Juaranya?',
-          imageUrl: 'images/beat.png',
-          content: 'Lorem ipsum dolor sit amet...',
-          date: '12 November 2023'),
-      Article(
-          id: 2,
-          title:
-              'Honda PCX 160 vs Yamaha Nmax Turbo: Duel Sengit Skutik Bongsor, Mana Juaranya?',
-          imageUrl: 'images/beat.png',
-          content: 'Lorem ipsum dolor sit amet...',
-          date: '12 November 2023'),
-      Article(
-          id: 3,
-          title:
-              'Honda PCX 160 vs Yamaha Nmax Turbo: Duel Sengit Skutik Bongsor, Mana Juaranya?',
-          imageUrl: 'images/beat.png',
-          content: 'Lorem ipsum dolor sit amet...',
-          date: '12 November 2023'),
-    ];
+    try {
+      final response = await http.get(
+        Uri.parse('https://predict-fuel-3010998af052.herokuapp.com/articles'),
+        headers: {'Content-Type': 'application/json; charset=UTF-8'},
+      ).timeout(const Duration(seconds: 10));
+
+      if (response.statusCode == 200) {
+        final List<dynamic> data = json.decode(response.body);
+        return data.map((json) => Article.fromJson(json)).toList();
+      } else {
+        throw Exception('Failed to load articles');
+      }
+    } catch (e) {
+      throw Exception('Error: $e');
+    }
+  }
+
+  Future<Article> getArticleById(int id) async {
+    try {
+      final response = await http.get(
+        Uri.parse('https://predict-fuel-3010998af052.herokuapp.com/articles/$id'),
+        headers: {'Content-Type': 'application/json; charset=UTF-8'},
+      ).timeout(const Duration(seconds: 10));
+
+      if (response.statusCode == 200) {
+        return Article.fromJson(json.decode(response.body));
+      } else {
+        throw Exception('Article not found');
+      }
+    } catch (e) {
+      throw Exception('Error: $e');
+    }
   }
 
   Future<List<Motorcycle>> getMotorcycles({String? make, String? model}) async {
@@ -116,20 +126,4 @@ class ApiService {
       throw Exception('Error: $e');
     }
   }
-}
-
-class Article {
-  final int id;
-  final String title;
-  final String imageUrl;
-  final String content;
-  final String date;
-
-  Article({
-    required this.id,
-    required this.title,
-    required this.imageUrl,
-    required this.content,
-    required this.date,
-  });
 }
