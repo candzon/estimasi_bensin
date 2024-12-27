@@ -62,7 +62,7 @@ class CalculatorScreenState extends State<CalculatorScreen> {
         if (selectedVehicle != null && selectedFuel != null) {
           Predict predict = Predict(
             jarakTempuh: distance,
-            bahanBakar: estimatedFuel!,
+            bahanBakar: fuelTypes.indexOf(selectedFuel!).toDouble(),
             merkKendaraan: selectedVehicle!,
             estimasiBensin: estimatedFuel!,
             totalBiaya: totalCost!,

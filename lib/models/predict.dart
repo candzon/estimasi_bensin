@@ -15,6 +15,17 @@ class Predict {
     this.photo,
   });
 
+  factory Predict.fromJson(Map<String, dynamic> json) {
+    return Predict(
+      jarakTempuh: json['jarakTempuh'],
+      bahanBakar: json['bahanBakar'],
+      merkKendaraan: json['merkKendaraan'],
+      estimasiBensin: json['estimasiBensin'],
+      totalBiaya: json['totalBiaya'],
+      photo: json['photo'],
+    );
+  }
+
   Map<String, dynamic> toJson() {
     return {
       'jarakTempuh': jarakTempuh,

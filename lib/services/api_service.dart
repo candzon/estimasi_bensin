@@ -8,6 +8,24 @@ class ApiService {
   static const String apiKey = 'Lnh4vtS3k9f6q1p/IH+dew==Oml0r22EKCj9xbwP';
   final String baseUrl = dotenv.env['BASE_URL']!;
 
+  Future<List<Predict>> fetchPredicts() async {
+    try {
+      final response = await http.get(
+        Uri.parse('$baseUrl/predicts'),
+        headers: {'Content-Type': 'application/json; charset=UTF-8'},
+      );
+
+      if (response.statusCode == 200) {
+        final List<dynamic> data = json.decode(response.body);
+        return data.map((json) => Predict.fromJson(json)).toList();
+      } else {
+        throw Exception('Failed to load predicts: ${response.statusCode}');
+      }
+    } catch (e) {
+      throw Exception('Error: $e');
+    }
+  }
+
   Future<void> createPredict(Predict predict) async {
     final response = await http.post(
       Uri.parse('$baseUrl/predicts/new'),
