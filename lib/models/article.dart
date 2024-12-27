@@ -1,3 +1,5 @@
+import 'package:intl/intl.dart';
+
 class Article {
   final int id;
   final String title;
@@ -21,8 +23,8 @@ class Article {
       title: json['title'],
       body: json['body'],
       photo: json['photo'],
-      createdAt: DateTime.parse(json['createdAt']),
-      updatedAt: DateTime.parse(json['updatedAt']),
+      createdAt: DateFormat("EEE, dd MMM yyyy HH:mm:ss 'GMT'").parse(json['createdAt']),
+      updatedAt: DateFormat("EEE, dd MMM yyyy HH:mm:ss 'GMT'").parse(json['updatedAt']),
     );
   }
 }

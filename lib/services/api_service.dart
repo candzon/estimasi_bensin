@@ -64,7 +64,7 @@ class ApiService {
   Future<Article> getArticleById(int id) async {
     try {
       final response = await http.get(
-        Uri.parse('https://predict-fuel-3010998af052.herokuapp.com/articles/$id'),
+        Uri.parse('https://predict-fuel-3010998af052.herokuapp.com/articles/get/$id'),
         headers: {'Content-Type': 'application/json; charset=UTF-8'},
       ).timeout(const Duration(seconds: 10));
 
