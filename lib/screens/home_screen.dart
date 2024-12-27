@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'calculator_screen.dart';
 import '../widgets/motorcycle_card.dart';
-import '../widgets/motorcycle_list.dart';
 import '../widgets/article_list.dart';
 
 class HomeScreen extends StatelessWidget {
@@ -36,9 +35,9 @@ class HomeScreen extends StatelessWidget {
                 style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
               ),
             ),
-            const ArticleList(),
+            const ArticleList(), // Ini aja yang di perlukan untuk Article List
             const SizedBox(height: 16),
-            const MotorcycleList(),
+            // const MotorcycleList(), // Ini ga perlu budi heni
           ],
         ),
       ),

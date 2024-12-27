@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import '../screens/article_detail_screen.dart';
 
 class ArticleList extends StatelessWidget {
   const ArticleList({super.key});

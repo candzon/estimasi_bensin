@@ -1,10 +1,27 @@
 import 'dart:convert';
 import 'package:http/http.dart' as http;
 import '../models/motorcycle.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
+import '../models/predict.dart';
 
 class ApiService {
   static const String apiKey = 'Lnh4vtS3k9f6q1p/IH+dew==Oml0r22EKCj9xbwP';
-  static const String baseUrl = 'https://api.api-ninjas.com/v1';
+  final String baseUrl = dotenv.env['BASE_URL']!;
+
+  Future<void> createPredict(Predict predict) async {
+    final response = await http.post(
+      Uri.parse('$baseUrl/predicts/new'),
+      headers: <String, String>{
+        'Content-Type': 'application/json; charset=UTF-8',
+      },
+      body: jsonEncode(predict.toJson()),
+    );
+    if (response.statusCode == 201) {
+      print('Predict created successfully');
+    } else {
+      throw Exception('Failed to create predict');
+    }
+  }
 
   Future<List<Article>> getArticles() async {
     // Static article data

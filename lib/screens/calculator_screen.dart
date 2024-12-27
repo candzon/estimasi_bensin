@@ -1,13 +1,15 @@
 import 'package:flutter/material.dart';
+import '../models/predict.dart';
+import '../services/api_service.dart';
 
 class CalculatorScreen extends StatefulWidget {
   const CalculatorScreen({super.key});
 
   @override
-  _CalculatorScreenState createState() => _CalculatorScreenState();
+  CalculatorScreenState createState() => CalculatorScreenState();
 }
 
-class _CalculatorScreenState extends State<CalculatorScreen> {
+class CalculatorScreenState extends State<CalculatorScreen> {
   String? selectedVehicle;
   String? selectedFuel;
   TextEditingController distanceController = TextEditingController();
@@ -16,7 +18,8 @@ class _CalculatorScreenState extends State<CalculatorScreen> {
   double? totalCost;
 
   final double fuelEfficiency = 30; // Konsumsi bahan bakar (km/L)
-  final double fuelPrice = 10000; // Harga bahan bakar per liter (Rp)
+  var fuelPrice = 0; // Harga bahan bakar per liter (Rp)
+  final ApiService apiService = ApiService();
 
   final List<String> vehicleTypes = [
     'Suzuki nex II',
@@ -55,6 +58,27 @@ class _CalculatorScreenState extends State<CalculatorScreen> {
       setState(() {
         estimatedFuel = distance / fuelEfficiency;
         totalCost = (estimatedFuel ?? 0) * fuelPrice;
+
+        if (selectedVehicle != null && selectedFuel != null) {
+          Predict predict = Predict(
+            jarakTempuh: distance,
+            bahanBakar: estimatedFuel!,
+            merkKendaraan: selectedVehicle!,
+            estimasiBensin: estimatedFuel!,
+            totalBiaya: totalCost!,
+            photo: null,
+          );
+
+          apiService.createPredict(predict).then((_) {
+            ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(content: Text('Data berhasil dikirim ke server')),
+            );
+          }).catchError((error) {
+            ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(content: Text('Gagal mengirim data ke server')),
+            );
+          });
+        }
       });
     }
   }
@@ -102,6 +126,17 @@ class _CalculatorScreenState extends State<CalculatorScreen> {
               onChanged: (newValue) {
                 setState(() {
                   selectedFuel = newValue;
+                  switch (newValue) {
+                    case 'Pertalite':
+                      fuelPrice = 10000;
+                      break;
+                    case 'Pertamax':
+                      fuelPrice = 12100;
+                      break;
+                    case 'Pertamax Turbo':
+                      fuelPrice = 13550;
+                      break;
+                  }
                 });
               },
             ),

@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import '../models/motorcycle.dart';
 import '../services/api_service.dart';
 import '../screens/article_detail_screen.dart';
 
@@ -88,18 +87,6 @@ class _ArticleListState extends State<ArticleList> {
                   ],
                 ),
               ),
-            );
-            return GestureDetector(
-              behavior: HitTestBehavior.opaque,
-              onTap: () {
-                Navigator.of(context).push(
-                  MaterialPageRoute(
-                    builder: (_) =>
-                        ArticleDetailScreen(articleId: article.id ?? index),
-                  ),
-                );
-              },
-              // Rest of your widget code...
             );
           },
         );
