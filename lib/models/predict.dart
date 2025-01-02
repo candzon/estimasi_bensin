@@ -1,4 +1,5 @@
 class Predict {
+  final int? id;
   final double jarakTempuh;
   final double bahanBakar;
   final String merkKendaraan;
@@ -7,6 +8,7 @@ class Predict {
   final String? photo;
 
   Predict({
+    this.id,
     required this.jarakTempuh,
     required this.bahanBakar,
     required this.merkKendaraan,
@@ -17,6 +19,7 @@ class Predict {
 
   factory Predict.fromJson(Map<String, dynamic> json) {
     return Predict(
+      id: json['id'],
       jarakTempuh: json['jarakTempuh'],
       bahanBakar: json['bahanBakar'],
       merkKendaraan: json['merkKendaraan'],
@@ -28,6 +31,7 @@ class Predict {
 
   Map<String, dynamic> toJson() {
     return {
+      'id': id,
       'jarakTempuh': jarakTempuh,
       'bahanBakar': bahanBakar,
       'merkKendaraan': merkKendaraan,

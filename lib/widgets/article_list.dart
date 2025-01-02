@@ -35,6 +35,8 @@ class _ArticleListState extends State<ArticleList> {
         }
 
         final articles = snapshot.data ?? [];
+
+        print(articles);
         return ListView.builder(
           shrinkWrap: true,
           physics: const NeverScrollableScrollPhysics(),
@@ -46,7 +48,8 @@ class _ArticleListState extends State<ArticleList> {
                 Navigator.push(
                   context,
                   MaterialPageRoute(
-                    builder: (context) => ArticleDetailScreen(articleId: article.id),
+                    builder: (context) =>
+                        ArticleDetailScreen(articleId: article.id),
                   ),
                 );
               },
