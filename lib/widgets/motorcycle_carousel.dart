@@ -16,18 +16,21 @@ class _MotorcycleCarouselState extends State<MotorcycleCarousel> {
   late PageController _pageController;
   late Timer _timer;
   int _currentPage = 0;
+  final double _viewportFraction = 0.75;
 
   @override
   void initState() {
     super.initState();
     _predictsFuture = _apiService.fetchPredicts();
-    _pageController = PageController(initialPage: _currentPage);
+    _pageController = PageController(
+      initialPage: _currentPage,
+      viewportFraction: _viewportFraction,
+    );
 
-    // Timer untuk auto-scroll
     _timer = Timer.periodic(const Duration(seconds: 3), (timer) {
       if (_pageController.hasClients) {
         setState(() {
-          _currentPage = (_currentPage + 1) % 5; // Loop ke index pertama
+          _currentPage = (_currentPage + 1) % 5;
           _pageController.animateToPage(
             _currentPage,
             duration: const Duration(milliseconds: 300),
@@ -51,7 +54,7 @@ class _MotorcycleCarouselState extends State<MotorcycleCarousel> {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         SizedBox(
-          height: 250,
+          height: 280,
           child: FutureBuilder<List<Predict>>(
             future: _predictsFuture,
             builder: (context, snapshot) {
@@ -65,152 +68,116 @@ class _MotorcycleCarouselState extends State<MotorcycleCarousel> {
 
               final predicts = snapshot.data ?? [];
 
-              return Stack(
-                children: [
-                  PageView.builder(
-                    controller: _pageController,
-                    itemCount: predicts.length,
-                    onPageChanged: (index) {
-                      setState(() {
-                        _currentPage = index;
-                      });
-                    },
-                    itemBuilder: (context, index) {
-                      final predict = predicts[index];
-                      return Card(
-                        margin: const EdgeInsets.symmetric(horizontal: 8.0),
-                        color: Colors.white,
-                        child: Stack(
-                          children: [
-                            Center(
-                              child: SizedBox(
-                                width: 200,
-                                height: 150,
-                                child: Image.asset(
-                                  predict.merkKendaraan == "Beat"
-                                      ? 'images/beat.png'
-                                      : predict.merkKendaraan == "Scoopy"
-                                          ? 'images/scoopy.jpeg'
-                                          : predict.merkKendaraan ==
-                                                  "Suzuki nex II"
-                                              ? 'images/suzuki-nex.jpeg'
-                                              : predict.merkKendaraan == "Vario"
-                                                  ? 'images/vario.jpeg'
-                                                  : 'images/default.png',
-                                  fit: BoxFit.contain,
-                                ),
-                              ),
-                            ),
-                            Positioned(
-                              bottom: 16,
-                              left: 16,
-                              child: Container(
-                                padding: const EdgeInsets.symmetric(
-                                  horizontal: 12,
-                                  vertical: 8,
-                                ),
-                                decoration: BoxDecoration(
-                                  color: Colors.grey.shade500,
-                                  borderRadius: BorderRadius.circular(6),
-                                ),
-                                child: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    Text(
-                                      predict.merkKendaraan,
-                                      style: const TextStyle(
-                                        color: Colors.white,
-                                        fontWeight: FontWeight.bold,
-                                      ),
-                                    ),
-                                    Text(
-                                      '${predict.jarakTempuh} km',
-                                      style: const TextStyle(
-                                        color: Colors.white,
-                                        fontWeight: FontWeight.bold,
-                                      ),
-                                    ),
-                                    Text(
-                                      'Rp ${predict.totalBiaya.toStringAsFixed(0).replaceAllMapped(RegExp(r'(\d{1,3})(?=(\d{3})+(?!\d))'), (Match m) => '${m[1]}.')}',
-                                      style: const TextStyle(
-                                        color: Colors.white,
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                              ),
-                            ),
-                          ],
+              return PageView.builder(
+                controller: _pageController,
+                itemCount: predicts.length,
+                onPageChanged: (index) {
+                  setState(() {
+                    _currentPage = index;
+                  });
+                },
+                itemBuilder: (context, index) {
+                  final predict = predicts[index];
+                  return AnimatedBuilder(
+                    animation: _pageController,
+                    builder: (context, child) {
+                      double value = 1.0;
+                      if (_pageController.position.haveDimensions) {
+                        value = (_pageController.page ?? 0) - index;
+                        value = (1 - (value.abs() * 0.4)).clamp(0.0, 1.0);
+                      }
+
+                      return Transform.scale(
+                        scale: value,
+                        child: Opacity(
+                          opacity: value,
+                          child: child,
                         ),
                       );
                     },
-                  ),
-                  // Panah Navigasi
-                  Positioned(
-                    left: 0,
-                    top: 0,
-                    bottom: 0,
-                    child: IconButton(
-                      icon: const Icon(Icons.arrow_back_ios),
-                      onPressed: () {
-                        if (_currentPage > 0) {
-                          setState(() {
-                            _currentPage--;
-                            _pageController.animateToPage(
-                              _currentPage,
-                              duration: const Duration(milliseconds: 300),
-                              curve: Curves.easeInOut,
-                            );
-                          });
-                        }
-                      },
+                    child: Card(
+                      margin: const EdgeInsets.symmetric(
+                        horizontal: 10.0,
+                        vertical: 16.0,
+                      ),
+                      elevation: 8,
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(20),
+                      ),
+                      child: Stack(
+                        children: [
+                          Center(
+                            child: ClipRRect(
+                              borderRadius: BorderRadius.circular(20),
+                              child: Image.asset(
+                                predict.merkKendaraan == "Beat"
+                                    ? 'images/beat.png'
+                                    : predict.merkKendaraan == "Scoopy"
+                                        ? 'images/scoopy.jpeg'
+                                        : predict.merkKendaraan ==
+                                                "Suzuki nex II"
+                                            ? 'images/suzuki-nex.jpeg'
+                                            : predict.merkKendaraan == "Vario"
+                                                ? 'images/vario.jpeg'
+                                                : 'images/default.png',
+                                fit: BoxFit.cover,
+                                width: double.infinity,
+                                height: double.infinity,
+                              ),
+                            ),
+                          ),
+                          Positioned(
+                            bottom: 16,
+                            left: 16,
+                            child: Container(
+                              padding: const EdgeInsets.symmetric(
+                                horizontal: 12,
+                                vertical: 8,
+                              ),
+                              decoration: BoxDecoration(
+                                color: Colors.black.withOpacity(0.7),
+                                borderRadius: BorderRadius.circular(10),
+                              ),
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Text(
+                                    predict.merkKendaraan,
+                                    style: const TextStyle(
+                                      color: Colors.white,
+                                      fontWeight: FontWeight.bold,
+                                      fontSize: 16,
+                                    ),
+                                  ),
+                                  const SizedBox(height: 4),
+                                  Text(
+                                    '${predict.jarakTempuh} km',
+                                    style: const TextStyle(
+                                      color: Colors.white,
+                                      fontSize: 14,
+                                    ),
+                                  ),
+                                  Text(
+                                    'Rp ${predict.totalBiaya.toStringAsFixed(0).replaceAllMapped(RegExp(r'(\d{1,3})(?=(\d{3})+(?!\d))'), (Match m) => '${m[1]}.')}',
+                                    style: const TextStyle(
+                                      color: Colors.white,
+                                      fontSize: 14,
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
                     ),
-                  ),
-                  Positioned(
-                    right: 0,
-                    top: 0,
-                    bottom: 0,
-                    child: IconButton(
-                      icon: const Icon(Icons.arrow_forward_ios),
-                      onPressed: () {
-                        setState(() {
-                          _currentPage++;
-                          _pageController.animateToPage(
-                            _currentPage,
-                            duration: const Duration(milliseconds: 300),
-                            curve: Curves.easeInOut,
-                          );
-                        });
-                      },
-                    ),
-                  ),
-                ],
+                  );
+                },
               );
             },
           ),
         ),
         const SizedBox(height: 8),
-        FutureBuilder<List<Predict>>(
-          future: _predictsFuture,
-          builder: (context, snapshot) {
-            final predicts = snapshot.data ?? [];
-            return Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: List.generate(predicts.length, (index) {
-                return Container(
-                  width: 8,
-                  height: 8,
-                  margin: const EdgeInsets.symmetric(horizontal: 2),
-                  decoration: BoxDecoration(
-                    color:
-                        _currentPage == index ? Colors.blue : Colors.grey[300],
-                    shape: BoxShape.circle,
-                  ),
-                );
-              }),
-            );
-          },
-        ),
       ],
     );
   }

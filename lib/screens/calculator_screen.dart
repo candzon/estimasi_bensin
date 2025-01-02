@@ -1,3 +1,4 @@
+import 'package:estimasi_bensin/widgets/custom_modal.dart';
 import 'package:flutter/material.dart';
 import '../models/predict.dart';
 import '../services/api_service.dart';
@@ -70,17 +71,89 @@ class CalculatorScreenState extends State<CalculatorScreen> {
           );
 
           apiService.createPredict(predict).then((_) {
-            ScaffoldMessenger.of(context).showSnackBar(
-              SnackBar(content: Text('Data berhasil dikirim ke server')),
-            );
+            if (mounted) {
+              showDialog(
+                context: context,
+                barrierDismissible: false,
+                builder: (context) => const CustomModal(
+                  message: 'Data berhasil dikirim ke server',
+                  isSuccess: true,
+                ),
+              );
+            }
           }).catchError((error) {
-            ScaffoldMessenger.of(context).showSnackBar(
-              SnackBar(content: Text('Gagal mengirim data ke server')),
-            );
+            if (mounted) {
+              showDialog(
+                context: context,
+                barrierDismissible: false,
+                builder: (context) => const CustomModal(
+                  message: 'Gagal mengirim data ke server',
+                  isSuccess: false,
+                ),
+              );
+            }
           });
         }
       });
     }
+  }
+
+  Widget _buildResultSection() {
+    return Card(
+      elevation: 2,
+      margin: const EdgeInsets.only(top: 24),
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+      child: Padding(
+        padding: const EdgeInsets.all(16.0),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            const Text(
+              'Hasil Perhitungan',
+              style: TextStyle(
+                fontSize: 18,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+            const Divider(
+              color: Colors.grey,
+              thickness: 1,
+              height: 16,
+            ),
+            const SizedBox(height: 8),
+            _buildResultRow(
+              'Estimasi Bensin:',
+              estimatedFuel != null
+                  ? '${estimatedFuel!.toStringAsFixed(2)} Liter'
+                  : '-',
+            ),
+            _buildResultRow(
+              'Total Biaya:',
+              totalCost != null ? 'Rp${totalCost!.toStringAsFixed(0)}' : '-',
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildResultRow(String title, String value) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 4),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          Text(
+            title,
+            style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w500),
+          ),
+          Text(
+            value,
+            style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+          ),
+        ],
+      ),
+    );
   }
 
   @override
@@ -108,7 +181,12 @@ class CalculatorScreenState extends State<CalculatorScreen> {
             DropdownButton<String>(
               isExpanded: true,
               value: selectedVehicle,
-              hint: const Text('Pilih Kendaraan'),
+              hint: Text(
+                'Pilih Kendaraan',
+                style: TextStyle(
+                  color: Colors.grey.shade500,
+                ),
+              ),
               items: vehicleTypes.map((String value) {
                 return DropdownMenuItem<String>(
                   value: value,
@@ -126,7 +204,12 @@ class CalculatorScreenState extends State<CalculatorScreen> {
             DropdownButton<String>(
               isExpanded: true,
               value: selectedFuel,
-              hint: const Text('Pilih Bahan Bakar'),
+              hint: Text(
+                'Pilih Bahan Bakar',
+                style: TextStyle(
+                  color: Colors.grey.shade500,
+                ),
+              ),
               items: fuelTypes.map((String value) {
                 return DropdownMenuItem<String>(
                   value: value,
@@ -165,23 +248,19 @@ class CalculatorScreenState extends State<CalculatorScreen> {
               child: ElevatedButton(
                 onPressed: calculateFuelAndCost,
                 style: ElevatedButton.styleFrom(
+                  backgroundColor: Colors.grey.shade200,
                   padding: const EdgeInsets.symmetric(vertical: 16),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(8),
+                  ),
                 ),
-                child: const Text('Hitung'),
+                child: const Text(
+                  'Hitung',
+                  style: TextStyle(color: Colors.black),
+                ),
               ),
             ),
-            const SizedBox(height: 24),
-            const Text('Hasil'),
-            const SizedBox(height: 8),
-            Text(
-              'Estimasi Bensin: ${estimatedFuel != null ? '${estimatedFuel!.toStringAsFixed(2)} Liter' : '-'}',
-              style: const TextStyle(fontSize: 16),
-            ),
-            const SizedBox(height: 8),
-            Text(
-              'Total Biaya: ${totalCost != null ? 'Rp${totalCost!.toStringAsFixed(0)}' : '-'}',
-              style: const TextStyle(fontSize: 16),
-            ),
+            _buildResultSection(),
           ],
         ),
       ),
