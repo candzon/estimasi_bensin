@@ -1,16 +1,34 @@
-# estimasi_bensin
+# Deskripsi
+Aplikasi FuelWise Rides adalah aplikasi mobile yang membantu pengguna menghitung estimasi konsumsi bahan bakar dan biaya perjalanan untuk kendaraan bermotor. Aplikasi ini juga menyediakan artikel-artikel informatif seputar dunia otomotif.
 
-A new Flutter project.
+## Features
+- Kalkulator estimasi bahan bakar
+- Artikel review motor
+- Perbandingan konsumsi BBM antar motor
 
-## Getting Started
+## Teknologi yang digunakan
+- Flutter & Dart
+- REST API
 
-This project is a starting point for a Flutter application.
+## Installation
+1. Clone repository
+- git clone https://github.com/yourusername/fuelwise_rides.git
+2. Masuk ke direktori project
+- cd fuelwise_rides
+3. Install dependencies
+- flutter pub get
+4. Jalankan aplikasi 
+- flutter run
 
-A few resources to get you started if this is your first Flutter project:
+## Known Issues
+1. Kalkulasi belum memperhitungkan kondisi jalan
+2. Artikel belum bisa di-bookmark
 
-- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
-
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+## Dependencies
+```yaml
+dependencies:
+  flutter:
+    sdk: flutter
+  cupertino_icons: ^1.0.2
+  http: ^1.1.0
+  provider: ^6.0.5
