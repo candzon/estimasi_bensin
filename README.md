@@ -12,7 +12,7 @@ Aplikasi FuelWise Rides adalah aplikasi mobile yang membantu pengguna menghitung
 
 ## Installation
 1. Clone repository
-- git clone https://github.com/yourusername/fuelwise_rides.git
+- git clone (https://github.com/candzon/estimasi_bensin.git)
 2. Masuk ke direktori project
 - cd fuelwise_rides
 3. Install dependencies
