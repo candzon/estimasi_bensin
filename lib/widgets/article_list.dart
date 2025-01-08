@@ -34,7 +34,11 @@ class _ArticleListState extends State<ArticleList> {
           return Center(child: Text('Error: ${snapshot.error}'));
         }
 
-        final articles = snapshot.data ?? [];
+        final articles = snapshot.data;
+
+        if (articles == null || articles.isEmpty) {
+          return Center(child: Text('Data not found or null'));
+        }
 
         return ListView.builder(
           shrinkWrap: true,

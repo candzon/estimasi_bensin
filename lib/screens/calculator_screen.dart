@@ -1,4 +1,4 @@
-import 'package:estimasi_bensin/widgets/custom_modal.dart';
+import 'package:fuelwise_news/widgets/custom_modal.dart';
 import 'package:flutter/material.dart';
 import '../models/predict.dart';
 import '../services/api_service.dart';

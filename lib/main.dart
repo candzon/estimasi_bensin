@@ -1,5 +1,5 @@
-import 'package:estimasi_bensin/constants/app_pallete.dart';
-import 'package:estimasi_bensin/constants/app_themes.dart';
+import 'package:fuelwise_news/constants/app_pallete.dart';
+import 'package:fuelwise_news/constants/app_themes.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'screens/home_screen.dart';

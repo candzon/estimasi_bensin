@@ -14,10 +14,15 @@ class HomeScreen extends StatefulWidget {
 class _HomeScreenState extends State<HomeScreen> {
   final ApiService apiService = ApiService();
 
+  Future<void> _refreshData() async {
+    await apiService.fetchPredicts();
+    setState(() {});
+  }
+
   @override
   void initState() {
     super.initState();
-    apiService.fetchPredicts();
+    _refreshData();
   }
 
   @override
@@ -60,21 +65,25 @@ class _HomeScreenState extends State<HomeScreen> {
         ],
         iconTheme: const IconThemeData(color: Colors.black), // Warna ikon
       ),
-      body: SingleChildScrollView(
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            const MotorcycleCarousel(),
-            const Padding(
-              padding: EdgeInsets.all(16.0),
-              child: Text(
-                'Articles',
-                style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+      body: RefreshIndicator(
+        onRefresh: _refreshData,
+        child: SingleChildScrollView(
+          physics: const AlwaysScrollableScrollPhysics(),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              const MotorcycleCarousel(),
+              const Padding(
+                padding: EdgeInsets.all(16.0),
+                child: Text(
+                  'Articles',
+                  style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+                ),
               ),
-            ),
-            const ArticleList(),
-            const SizedBox(height: 16),
-          ],
+              const ArticleList(),
+              const SizedBox(height: 16),
+            ],
+          ),
         ),
       ),
     );

@@ -1,4 +1,4 @@
-import 'package:estimasi_bensin/widgets/dot_loading_indicator.dart';
+import 'package:fuelwise_news/widgets/dot_loading_indicator.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import '../models/article.dart';
